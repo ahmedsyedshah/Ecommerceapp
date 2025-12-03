@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: work on message screen (seller buyer messages)
-    var controller = Get.find<HomeController>();
+    var controller = Get.put(HomeController());
     return Container(
       color: lightGolden,
       padding: const EdgeInsets.all(12),

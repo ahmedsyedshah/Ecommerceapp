@@ -13,7 +13,8 @@ import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
-  // text editing controller
+
+  // controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -55,6 +56,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     5.heightBox,
+
                     controller.isLoading.value
                         ? const CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation(redColor),
@@ -65,6 +67,7 @@ class LoginScreen extends StatelessWidget {
                             textColor: whiteColor,
                             onPressed: () async {
                               controller.isLoading(true);
+
                               try {
                                 controller
                                     .loginMethod(
@@ -72,35 +75,38 @@ class LoginScreen extends StatelessWidget {
                                   password: passwordController.text,
                                   context: context,
                                 )
-                                    .then((value) {
-                                  if (value != null) {
+                                    .then((success) {
+                                  controller.isLoading(false);
+
+                                  if (success) {
                                     VxToast.show(context, msg: loggedin);
                                     Get.offAll(Home());
-                                  } else {
-                                    controller.isLoading(false);
                                   }
                                 });
                               } catch (e) {
+                                controller.isLoading(false);
                                 VxToast.show(context, msg: e.toString());
                               }
                             },
                           ).box.width(context.screenWidth - 50).make(),
+
                     5.heightBox,
                     createNewAccount.text.color(fontGrey).make(),
                     5.heightBox,
+
                     customButton(
                       color: lightGolden,
                       title: signup,
                       textColor: redColor,
                       onPressed: () {
-                        Get.to(
-                          () => const SignupScreen(),
-                        );
+                        Get.to(() => const SignupScreen());
                       },
                     ).box.width(context.screenWidth - 50).make(),
+
                     10.heightBox,
                     loginWith.text.color(fontGrey).make(),
                     5.heightBox,
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(

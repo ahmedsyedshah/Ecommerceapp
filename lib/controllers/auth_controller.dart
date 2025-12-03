@@ -6,20 +6,31 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   var isLoading = false.obs;
 
-  // login method
+  // 🔥 Hardcoded Admin Credentials
+  final String allowedEmail = "admin@gmail.com";
+  final String allowedPassword = "123456";
 
-  Future<UserCredential?> loginMethod({email, password, context}) async {
-    UserCredential? userCredential;
-    try {
-      userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      VxToast.show(context, msg: e.toString());
+  // 🔥 UPDATED LOGIN METHOD (supports admin bypass)
+  Future<bool> loginMethod({email, password, context}) async {
+    // 1) ADMIN BYPASS CHECK
+    if (email == allowedEmail && password == allowedPassword) {
+      return true; // instantly login without Firebase
     }
-    return userCredential;
+
+    // 2) NORMAL FIREBASE LOGIN
+    try {
+      await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      VxToast.show(context, msg: e.message.toString());
+      return false;
+    }
   }
 
-  // signup method
+  // SIGNUP METHOD (unchanged)
   Future<UserCredential?> signupMethod({email, password, context}) async {
     UserCredential? userCredential;
     try {
@@ -31,7 +42,7 @@ class AuthController extends GetxController {
     return userCredential;
   }
 
-  // store user data
+  // STORE USER DATA (unchanged)
   storeUserdata({name, password, email}) async {
     DocumentReference store =
         firestore.collection(usersCollection).doc(currentUser!.uid);
@@ -47,7 +58,7 @@ class AuthController extends GetxController {
     });
   }
 
-  // signout
+  // SIGN OUT (unchanged)
   signoutMethod({context}) async {
     try {
       await auth.signOut();
